@@ -18,12 +18,12 @@ class OpenTDB:
         self.json = json
 
     async def question(self):
+        """Get a random question """
         async with aiohttp.ClientSession() as session:
             r = await session.get(self.url)
             self.json = await r.json()
 
             question = self.json['results'][self.random_number]['question']
-            print(f"{question=}")
             
             question_as_a_list = question.split("&quot;")
             new_ques = []
@@ -36,8 +36,6 @@ class OpenTDB:
                 new_new_ques.append(x.split("&rsquo;"))
 
             
-            print(f"{new_ques=}")
-            print(f"{question_as_a_list=}")
             
             if len(new_ques) == 1:
                 question_as_a_list = "".join(question_as_a_list)
@@ -62,15 +60,20 @@ class OpenTDB:
         return question_as_a_list
     
     async def answers(self):
+        """Get the answers for the random question above, 
+        the answers are in a list the first element is the 
+        correct answer and the second element is the list of wrong options """
         correct_answers = self.json['results'][self.random_number]['correct_answer']
         incorrect_answers = self.json['results'][self.random_number]['incorrect_answers']
 
         return [correct_answers,incorrect_answers]
         
     async def category(self):
+        """Gives Category to the question """
         category = self.json['results'][self.random_number]['category']
         return category
 
     async def difficulty(self):
+        """Give difficulty of the question"""
         diff = self.json['results'][self.random_number]['difficulty']
         return diff
