@@ -4,6 +4,8 @@ import random
 import json
 
  # https://opentdb.com/api.php?amount=10 url
+session = aiohttp.ClientSession()
+
 
 
 class OpenTDB:
@@ -19,42 +21,42 @@ class OpenTDB:
 
     async def question(self):
         """Get a random question """
-        async with aiohttp.ClientSession() as session:
-            r = await session.get(self.url)
-            self.json = await r.json()
+        r = await session.get(self.url,headers = {'Connection': 'keep-alive'})
+        print(r)
+        self.json = await r.json()
 
-            question = self.json['results'][self.random_number]['question']
-            
-            question_as_a_list = question.split("&quot;")
-            new_ques = []
-            new_new_ques = []
-            
-            for item in question_as_a_list:
-                new_ques.append(item.split("&#039;"))
-            
-            for x in question_as_a_list:
-                new_new_ques.append(x.split("&rsquo;"))
+        question = self.json['results'][self.random_number]['question']
+        
+        question_as_a_list = question.split("&quot;")
+        new_ques = []
+        new_new_ques = []
+        
+        for item in question_as_a_list:
+            new_ques.append(item.split("&#039;"))
+        
+        for x in question_as_a_list:
+            new_new_ques.append(x.split("&rsquo;"))
 
-            
-            
-            if len(new_ques) == 1:
-                question_as_a_list = "".join(question_as_a_list)
-            
-            elif len(new_new_ques) == 1:
-                question_as_a_list = "".join(question_as_a_list)
+        
+        
+        if len(new_ques) == 1:
+            question_as_a_list = "".join(question_as_a_list)
+        
+        elif len(new_new_ques) == 1:
+            question_as_a_list = "".join(question_as_a_list)
 
-            elif len(new_new_ques) != 1:
-                question_as_a_list = ""
-                for item in new_ques:
-                    question_as_a_list += "".join(item)
+        elif len(new_new_ques) != 1:
+            question_as_a_list = ""
+            for item in new_ques:
+                question_as_a_list += "".join(item)
 
-            else:
-                question_as_a_list = ""
-                for item in new_ques:
-                    question_as_a_list += "".join(item)
-                
-
+        else:
+            question_as_a_list = ""
+            for item in new_ques:
+                question_as_a_list += "".join(item)
             
+
+        
 
 
         return question_as_a_list
